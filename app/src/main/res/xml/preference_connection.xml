@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:summary="Server Settings"
+        android:title="Server Settings"
+        >
+    <EditTextPreference
+        android:key="@string/pref_key_web_address"
+        android:title="Web Address"
+        android:defaultValue="0.0.0.0"
+        android:selectAllOnFocus="true"
+        android:inputType="textUri"
+        android:capitalize="words"
+        android:singleLine="true"
+        android:maxLines="1" />
+
+    <EditTextPreference
+        android:key="@string/pref_key_web_port"
+        android:title="Web Port"
+        android:defaultValue="80"
+        android:selectAllOnFocus="true"
+        android:inputType="number"
+        android:capitalize="words"
+        android:singleLine="true"
+        android:maxLines="1"
+        />
+    </PreferenceCategory>
+</PreferenceScreen>

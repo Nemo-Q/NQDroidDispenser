@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">NQDroidDispenser</string>
+    <string name="pref_key_pin">APP_PIN</string>
+    <string name="default_pin">2244</string>
+
+
+    <string name="title_activity_settings">Settings</string>
+    <!-- Strings related to Settings -->
+    <string name="pref_header_general">General</string>
+
+    <string name="pref_key_boot">BOOT_APP</string>
+    <string name="pref_key_kiosk">KIOSK_MODE</string>
+    <string name="pref_key_close">CLOSE_SETTINGS</string>
+    <string name="pref_key_quit">QUIT_APP</string>
+    <string name="pref_key_launcher">SELECT_LAUNCHER</string>
+
+
+    <string name="pref_header_connection">Connectivity</string>
+
+    <string name="pref_key_web_address">WEB_IP</string>
+    <string name="pref_key_web_port">WEB_PORT</string>
+
+
+
+
+</resources>
