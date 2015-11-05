@@ -4,9 +4,14 @@
 
 
     <header android:fragment="com.nemoq.nqdroiddispenser.SettingsActivity$GeneralPreferenceFragment"
-        android:title="@string/pref_header_general" />
+        android:title="@string/pref_header_general">
+        <extra android:name="settings" android:value="General" />
+    </header>
 
     <header android:fragment="com.nemoq.nqdroiddispenser.SettingsActivity$ConnectionPreferenceFragment"
-        android:title="Connectivity" />
+        android:title="Connectivity">
+    <extra android:name="settings" android:value="Connection" />
+    </header>
+
 
 </preference-headers>

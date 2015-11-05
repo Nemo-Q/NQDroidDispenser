@@ -12,7 +12,7 @@
             android:key="@string/pref_key_boot"
             android:title="Launch on Boot"
             android:summary="Start the App when the device boots"
-            android:defaultValue="True" />
+            android:defaultValue="false" />
 
     </PreferenceCategory>
     <PreferenceCategory

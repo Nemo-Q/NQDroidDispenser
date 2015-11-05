@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -32,13 +33,14 @@ import java.util.List;
  * href="http://developer.android.com/guide/topics/ui/settings.html">Settings
  * API Guide</a> for more information on developing a Settings UI.
  */
-public class SettingsActivity extends PreferenceActivity {
+public class SettingsActivity extends PreferenceActivity{
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
     }
 
 
@@ -73,6 +75,7 @@ public class SettingsActivity extends PreferenceActivity {
     public void onBuildHeaders(List<Header> target) {
         loadHeadersFromResource(R.xml.preference_headers, target);
     }
+
 
     /**
      * A preference value change listener that updates the preference's summary
@@ -172,23 +175,23 @@ public class SettingsActivity extends PreferenceActivity {
             });
 
         }
-            else if (preference.getKey().equals(res.getString(R.string.pref_key_quit))){
+        else if (preference.getKey().equals(res.getString(R.string.pref_key_quit))){
 
-                preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 
-                    @Override
-                    public boolean onPreferenceClick(Preference preference) {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
 
-                        PreferenceActivity preferenceActivity = (PreferenceActivity)preference.getContext();
-                        preferenceActivity.finish();
+                    PreferenceActivity preferenceActivity = (PreferenceActivity)preference.getContext();
+                    preferenceActivity.finish();
 
-                        Intent intent=new Intent(preference.getContext().getApplicationContext(),DispenserActivity.class);
+                    Intent intent=new Intent(preference.getContext().getApplicationContext(),DispenserActivity.class);
 
-                        intent.setAction(preference.getContext().getString(R.string.broadcast_close_activity));
-                        LocalBroadcastManager.getInstance(preference.getContext()).sendBroadcast(intent);
+                    intent.setAction(preference.getContext().getString(R.string.broadcast_close_activity));
+                    LocalBroadcastManager.getInstance(preference.getContext()).sendBroadcast(intent);
 
 
-                        return false;
+                    return false;
                     }
                 });
 
@@ -217,6 +220,7 @@ public class SettingsActivity extends PreferenceActivity {
         }
 
     }
+
 
 
     /**

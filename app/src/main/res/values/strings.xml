@@ -19,8 +19,7 @@
 
     <string name="pref_key_web_address">WEB_IP</string>
     <string name="pref_key_web_port">WEB_PORT</string>
-
-
+    <string name="action_settings">Settings</string>
 
 
 </resources>

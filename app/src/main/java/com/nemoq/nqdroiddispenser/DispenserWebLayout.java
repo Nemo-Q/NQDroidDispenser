@@ -15,6 +15,9 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.webkit.JavascriptInterface;
+import android.webkit.JsResult;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
@@ -22,6 +25,9 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 
 /**
@@ -85,7 +91,7 @@ public class DispenserWebLayout extends RelativeLayout implements View.OnClickLi
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
 
-            //view.loadUrl(url);
+
 
             return false;
         }
@@ -105,6 +111,26 @@ public class DispenserWebLayout extends RelativeLayout implements View.OnClickLi
         }
     }
 
+    private class ChromeWebClient extends WebChromeClient{
+
+        @Override
+        public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
+            return super.onJsAlert(view, url, message, result);
+        }
+
+        @Override
+        public void onShowCustomView(View view, CustomViewCallback callback) {
+            super.onShowCustomView(view, callback);
+        }
+
+        @Override
+        public void onHideCustomView() {
+            super.onHideCustomView();
+        }
+    }
+
+
+
     @Override
     protected void onFinishInflate() {
 
@@ -116,8 +142,6 @@ public class DispenserWebLayout extends RelativeLayout implements View.OnClickLi
 
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setWebViewClient(new DispenserWebViewClient());
-        webView.addJavascriptInterface(new WebAppInterface(getContext()), "Android");
-        webView.getSettings().setBuiltInZoomControls(false);
 
 
         loadWebFromPreferences();
@@ -155,9 +179,9 @@ public class DispenserWebLayout extends RelativeLayout implements View.OnClickLi
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         String address = sharedPreferences.getString(getResources().getString(R.string.pref_key_web_address), "");
         String port= sharedPreferences.getString(getResources().getString(R.string.pref_key_web_port),"");
-        address = address.contains("http://") ? address : "http://" + address;
+       // address = address.contains("http://") ? address : "http://" + address;
 
-        webView.loadUrl(address + ":" + port + "/NQS/NQV2WebTouchDispenser/");
+        webView.loadUrl(address );
         //String html = "<iframe width=\"854\" height=\"480\" src=\"https://www.youtube.com/embed/pQRMkK1go5I\" frameborder=\"0\" allowfullscreen></iframe>";
         //webView.loadData(html, "text/html", null);
 
