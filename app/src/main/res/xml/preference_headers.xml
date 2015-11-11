@@ -12,6 +12,9 @@
         android:title="Connectivity">
     <extra android:name="settings" android:value="Connection" />
     </header>
-
+    <header android:fragment="com.nemoq.nqdroiddispenser.SettingsActivity$ViewPreferenceFragment"
+        android:title="View">
+        <extra android:name="settings" android:value="View" />
+    </header>
 
 </preference-headers>

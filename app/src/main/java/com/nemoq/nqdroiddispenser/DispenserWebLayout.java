@@ -5,15 +5,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.webkit.ConsoleMessage;
 import android.webkit.JavascriptInterface;
 import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
@@ -22,12 +26,9 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 
 /**
@@ -40,13 +41,13 @@ public class DispenserWebLayout extends RelativeLayout implements View.OnClickLi
 
     private ImageButton settingsButton;
 
+    private boolean initialPageLoad = true;
+
+    private static float SCALE_MULTIPLIER = 1;
 
     public DispenserWebLayout(Context context) {
         super(context);
-
         init(context);
-
-
 
     }
 
@@ -62,10 +63,7 @@ public class DispenserWebLayout extends RelativeLayout implements View.OnClickLi
     }
 
     private void init(Context context) {
-
-       inflate(context,R.layout.dispenser_ui, this);
-
-
+       inflate(context, R.layout.dispenser_ui, this);
     }
 
 
@@ -83,32 +81,53 @@ public class DispenserWebLayout extends RelativeLayout implements View.OnClickLi
             Log.d("javascript:", toast);
         }
 
-
     }
 
 
     private class DispenserWebViewClient extends WebViewClient {
+
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-
-
-
             return false;
         }
 
         @Override //TODO STOP SPINNER
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
+            if (initialPageLoad) {
+                final ImageView splashScreen = (ImageView) findViewById(R.id.splashImageView);
+                Animation fadeOutSplash = AnimationUtils.loadAnimation(getContext(), R.anim.abc_fade_out);
+
+                fadeOutSplash.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        splashScreen.setVisibility(INVISIBLE);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+                splashScreen.setAnimation(fadeOutSplash);
+                splashScreen.startAnimation(fadeOutSplash);
+                initialPageLoad = false;
+
+            }
+
         }
-
-
-
 
 
         @Override //TODO LOADING SPINNER OR LIKEWISE
         public void onLoadResource(WebView view, String url) {
             super.onLoadResource(view, url);
         }
+
     }
 
     private class ChromeWebClient extends WebChromeClient{
@@ -138,16 +157,26 @@ public class DispenserWebLayout extends RelativeLayout implements View.OnClickLi
 
         webView = (WebView)findViewById(R.id.dispenserWebView);
 
-        webView.setOnTouchListener(this);
 
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setWebViewClient(new DispenserWebViewClient());
+
+        webView.setOnTouchListener(this);
+        webView.setWebChromeClient(new WebChromeClient() {
+            public boolean onConsoleMessage(ConsoleMessage cm) {
+                Log.d("Chromium Msg", cm.message() + " -- From line "
+                        + cm.lineNumber() + " of "
+                        + cm.sourceId());
+                return true;
+            }
+        });
 
 
         loadWebFromPreferences();
 
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(getResources().getString(R.string.broadcast_address_changed));
+        intentFilter.addAction(getResources().getString(R.string.broadcast_view_settings_changed));
 
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(new BroadcastReceiver() {
             @Override
@@ -156,11 +185,11 @@ public class DispenserWebLayout extends RelativeLayout implements View.OnClickLi
 
                     loadWebFromPreferences();
                 }
-
-
+                else if (intent.getAction().equals(getResources().getString(R.string.broadcast_view_settings_changed))){
+                    reloadCurrentUrl();
+                }
             }
         }, intentFilter);
-
         settingsButton = (ImageButton) findViewById(R.id.settingsButton);
         settingsButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View settingsButtonView) {
@@ -178,22 +207,47 @@ public class DispenserWebLayout extends RelativeLayout implements View.OnClickLi
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         String address = sharedPreferences.getString(getResources().getString(R.string.pref_key_web_address), "");
-        String port= sharedPreferences.getString(getResources().getString(R.string.pref_key_web_port),"");
-       // address = address.contains("http://") ? address : "http://" + address;
 
-        webView.loadUrl(address );
-        //String html = "<iframe width=\"854\" height=\"480\" src=\"https://www.youtube.com/embed/pQRMkK1go5I\" frameborder=\"0\" allowfullscreen></iframe>";
-        //webView.loadData(html, "text/html", null);
-
+        webView.loadUrl(address);
 
     }
 
+    private void reloadCurrentUrl(){
+
+        webView.setInitialScale(getInitialScale());
+        webView.loadUrl(webView.getUrl());
+
+    }
+
+
+    private int getInitialScale(){
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        SCALE_MULTIPLIER = Float.parseFloat(sharedPreferences.getString(getResources().getString(R.string.pref_key_scale_multiplier), "1"));
+
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+
+        switch (metrics.densityDpi) {
+            case DisplayMetrics.DENSITY_HIGH:
+                return (int)(200 * SCALE_MULTIPLIER);
+            case DisplayMetrics.DENSITY_MEDIUM:
+                return (int)(100 * SCALE_MULTIPLIER);
+            case DisplayMetrics.DENSITY_LOW:
+                return (int)(50 * SCALE_MULTIPLIER);
+            default:
+                return (int)(100 * SCALE_MULTIPLIER);
+        }
+    }
+
+
+
     float historicalX;
+    float historicalY;
     boolean slidingButton = false;
+
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-
 
 
     //Intercept touch events
@@ -205,12 +259,12 @@ public class DispenserWebLayout extends RelativeLayout implements View.OnClickLi
                 historicalX = 0;
 
 
-            } else {
+            } else if (event.getAction() == MotionEvent.ACTION_MOVE){
                 //Settings button logic
                 if (!slidingButton) {
 
 
-                    if (historicalX >= settingsButton.getX()) {
+                    if ((historicalX >= settingsButton.getX()) && (historicalX - event.getRawX() > 20)) {
 
 
 
@@ -245,6 +299,33 @@ public class DispenserWebLayout extends RelativeLayout implements View.OnClickLi
 
 
 
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            historicalX = event.getX();
+            historicalY = event.getY();
+
+            View ripple = findViewById(R.id.rippleView);
+            ripple.setX(event.getRawX()-ripple.getMeasuredWidth()/2);
+            ripple.setY(event.getRawY()-ripple.getMeasuredHeight()/2);
+        }
+        else if (event.getAction() == MotionEvent.ACTION_UP){
+
+
+
+            ViewConfiguration viewConfiguration = ViewConfiguration.get(getContext());
+
+            if ((viewConfiguration.getScaledTouchSlop() > Math.abs(event.getX() - historicalX)) && viewConfiguration.getScaledTouchSlop() > (Math.abs(event.getY()-historicalY) ))
+            {
+                View ripple = findViewById(R.id.rippleView);
+
+                ripple.setAlpha(0.7f);
+                Animation rippleAnim = AnimationUtils.loadAnimation(getContext(), R.anim.circle_ripple);
+                ripple.setAnimation(rippleAnim);
+                ripple.startAnimation(rippleAnim);
+            }
+
+        }
+
+
 
 
         return super.onTouchEvent(event);
@@ -264,7 +345,7 @@ public class DispenserWebLayout extends RelativeLayout implements View.OnClickLi
 
         for (int i = 0;i<10;i++){
 
-            int buttonId = getResources().getIdentifier("button" + String.valueOf(i), "id", "com.nemoq.nqdroiddispenser");
+            int buttonId = getResources().getIdentifier("button" + String.valueOf(i), "id", getContext().getPackageName());
 
             final Button button = (Button) findViewById(buttonId);
             button.setOnClickListener(this);
@@ -325,10 +406,12 @@ public class DispenserWebLayout extends RelativeLayout implements View.OnClickLi
         parent.startAnimation(fadeOut);
         ImageButton settingsButton = (ImageButton)findViewById(R.id.settingsButton);
         settingsButton.setEnabled(true);
-
+        pinTries = 0;
 
 
     }
+
+    int pinTries = 0;
 
     @Override
     public void onClick(View v) {
@@ -344,20 +427,25 @@ public class DispenserWebLayout extends RelativeLayout implements View.OnClickLi
 
         }
         else if(pinField.getText().toString().length() == 4) {
-
+            pinTries ++;
             if (PinCodeManager.getInstance(getContext()).checkPin(pinField.getText().toString())) {
 
                 dialogFinish(true);
 
             }
+            else if(pinTries == getContext().getResources().getInteger(R.integer.number_pin_tries)){
+                dialogFinish(false);
+            }
             else {
 
-                    Animation pinShake = AnimationUtils.loadAnimation(getContext(), R.anim.pin_shake);
+                Animation pinShake = AnimationUtils.loadAnimation(getContext(), R.anim.pin_shake);
                 pinField.startAnimation(pinShake);
+
 
             }
 
         }
+
 
 
     }
@@ -366,10 +454,8 @@ public class DispenserWebLayout extends RelativeLayout implements View.OnClickLi
 
     //Start the settings activity in the DispenserActivity
     private void showSettings(){
-
         DispenserActivity dispenserActivity = (DispenserActivity)getContext();
         dispenserActivity.showSettings();
-
     }
 
 }

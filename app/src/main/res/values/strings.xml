@@ -6,6 +6,8 @@
 
     <string name="title_activity_settings">Settings</string>
     <!-- Strings related to Settings -->
+
+    //General Preferences
     <string name="pref_header_general">General</string>
 
     <string name="pref_key_boot">BOOT_APP</string>
@@ -14,12 +16,19 @@
     <string name="pref_key_quit">QUIT_APP</string>
     <string name="pref_key_launcher">SELECT_LAUNCHER</string>
 
-
+    //Connection Preferences
     <string name="pref_header_connection">Connectivity</string>
 
-    <string name="pref_key_web_address">WEB_IP</string>
+    <string name="pref_key_web_address">WEB_ADDRESS</string>
     <string name="pref_key_web_port">WEB_PORT</string>
     <string name="action_settings">Settings</string>
+
+
+    //View Preferences
+    <string name="pref_header_view">VIEW_SETTINGS</string>
+
+    <string name="pref_key_scale_multiplier">SCALE_MULTIPLIER</string>
+
 
 
 </resources>

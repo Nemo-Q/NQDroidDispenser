@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <integer name="SETTINGS_REQUEST_CODE">1231</integer>
+    <integer name="settings_request_code">1231</integer>
+    <integer name="number_pin_tries">3</integer>
 
 
 

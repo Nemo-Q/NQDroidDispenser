@@ -1,27 +1,19 @@
 package com.nemoq.nqdroiddispenser;
 
+import com.nemoq.nqdroiddispenser.DummyClasses.DummyViewGroup;
 import com.nemoq.nqdroiddispenser.util.SystemUiHider;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityManager;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.*;
-
-import android.util.Log;
 import android.view.View;
-
 import java.util.List;
 
 /**
@@ -48,10 +40,6 @@ public class DispenserActivity extends Activity{
     private SystemUiHider mSystemUiHider;
 
 
-
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +51,9 @@ public class DispenserActivity extends Activity{
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         KIOSK_MODE = sharedPreferences.getBoolean(this.getString(R.string.pref_key_kiosk),false);
+
+        if (KIOSK_MODE)
+            DummyViewGroup.getInstance(this).createDummyOverlay();
 
 
         final View contentView = findViewById(R.id.dispenserWebView);
@@ -76,9 +67,6 @@ public class DispenserActivity extends Activity{
         mSystemUiHider
                 .setOnVisibilityChangeListener(new SystemUiHider.OnVisibilityChangeListener() {
                     // Cached values.
-                    int mControlsHeight;
-                    int mShortAnimTime;
-
                     @Override
                     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
                     public void onVisibilityChange(boolean visible) {
@@ -99,23 +87,15 @@ public class DispenserActivity extends Activity{
 
 
 
-
     }
+
+
 
 
     private void setDefaultPreferences(){
         PreferenceManager.setDefaultValues(this, R.xml.preference_connection, false);
         PreferenceManager.setDefaultValues(this, R.xml.preference_general, false);
     }
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-
-
-    }
-
-
 
     Handler mHideHandler = new Handler();
     Runnable mHideRunnable = new Runnable() {
@@ -139,7 +119,7 @@ public class DispenserActivity extends Activity{
 
         KIOSK_MODE = false;
         Intent intent  = new Intent(this, SettingsActivity.class);
-        startActivityForResult(intent, getResources().getInteger(R.integer.SETTINGS_REQUEST_CODE));
+        startActivityForResult(intent, getResources().getInteger(R.integer.settings_request_code));
 
     }
 
@@ -151,39 +131,37 @@ public class DispenserActivity extends Activity{
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == getResources().getInteger(R.integer.SETTINGS_REQUEST_CODE)){
+        if (requestCode == getResources().getInteger(R.integer.settings_request_code)){
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
             KIOSK_MODE = sharedPreferences.getBoolean(this.getString(R.string.pref_key_kiosk),false);
-
+            if(KIOSK_MODE)
+                DummyViewGroup.getInstance(this).createDummyOverlay();
+            else
+                DummyViewGroup.getInstance(this).removeDummyOverlay();
         }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if (KIOSK_MODE) {
-
+        if (KIOSK_MODE)
             bringAppToFront();
-
-        }
     }
+
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         mSystemUiHider.hide();
         hideSystemUI();
-        if (!hasFocus && KIOSK_MODE) {
-
+        if (!hasFocus && KIOSK_MODE)
             bringAppToFront();
-
-        }
 
     }
 
+
     private void bringAppToFront(){
         final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             final List<ActivityManager.AppTask> runningProcs = activityManager.getAppTasks();
@@ -198,14 +176,9 @@ public class DispenserActivity extends Activity{
         else {
             final List<ActivityManager.RunningTaskInfo> recentTasks = activityManager.getRunningTasks(Integer.MAX_VALUE);
 
-
             for (int i = 0; i < recentTasks.size(); i++)
-            {
-
-                if (recentTasks.get(i).baseActivity.toShortString().indexOf(this.getApplication().getPackageName()) > -1) {
+                if (recentTasks.get(i).baseActivity.toShortString().contains(this.getApplication().getPackageName()))
                     activityManager.moveTaskToFront(recentTasks.get(i).id, ActivityManager.MOVE_TASK_WITH_HOME);
-                }
-            }
 
         }
 
@@ -215,12 +188,9 @@ public class DispenserActivity extends Activity{
 
         Intent intent = new Intent(getApplicationContext(), DispenserActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
         intent.setAction(Intent.ACTION_MAIN);
         intent.addCategory(Intent.CATEGORY_LAUNCHER);
         startActivity(intent);
-
-
     }
 
 
@@ -228,7 +198,6 @@ public class DispenserActivity extends Activity{
     public void onBackPressed() {
         hideSystemUI();
         if (!KIOSK_MODE)
-
             super.onBackPressed();
 
     }
@@ -237,7 +206,7 @@ public class DispenserActivity extends Activity{
         // Set the IMMERSIVE flag.
         // Set the content to appear under the system bars so that the content
         // doesn't resize when the system bars hide and show.
-        View dView = (View)findViewById(R.id.dispenserWebView);
+        View dView = findViewById(R.id.dispenserWebView);
         dView.setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                         | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -250,7 +219,7 @@ public class DispenserActivity extends Activity{
     // This snippet shows the system bars. It does this by removing all the flags
 // except for the ones that make the content appear under the system bars.
     private void showSystemUI() {
-        View dView = (View)findViewById(R.id.dispenserWebView);
+        View dView = findViewById(R.id.dispenserWebView);
         dView.setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                         | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION

@@ -1,13 +1,8 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory
-        android:summary="Service Settings"
-        android:title="Service Settings"
+        android:summary="Settings"
+        android:title="Settings"
         >
-        <CheckBoxPreference
-        android:key="@string/pref_key_kiosk"
-        android:title="Kiosk Mode"
-        android:summary="Disable the navigation bar\nNeeds device restart to take effect"
-        android:defaultValue="False" />
         <CheckBoxPreference
             android:key="@string/pref_key_boot"
             android:title="Launch on Boot"

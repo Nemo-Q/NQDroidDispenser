@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:summary="UI"
+        android:title="UI"
+        >
+        <CheckBoxPreference
+            android:key="@string/pref_key_kiosk"
+            android:title="Kiosk Mode"
+            android:summary="Disable the navigation and notification bar\n"
+            android:defaultValue="False" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:summary="Zoom"
+        android:title="Zoom Settings"
+        >
+        <EditTextPreference
+            android:key="@string/pref_key_scale_multiplier"
+            android:title="Content scaling"
+            android:summary="Scale the content"
+            android:defaultValue="1"
+            android:inputType="numberDecimal"
+
+            />
+
+
+    </PreferenceCategory>
+</PreferenceScreen>

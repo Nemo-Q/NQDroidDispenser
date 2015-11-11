@@ -1,4 +1,4 @@
-package com.nemoq.nqdroiddispenser;
+package com.nemoq.nqdroiddispenser.DummyClasses;
 
 import android.app.Activity;
 

@@ -4,7 +4,6 @@ import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -17,6 +16,8 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+
+import com.nemoq.nqdroiddispenser.DummyClasses.DummyActivity;
 
 import java.io.DataOutputStream;
 import java.util.List;
@@ -102,10 +103,10 @@ public class SettingsActivity extends PreferenceActivity{
 
             }
             else if(preference.getKey().equals(res.getString(R.string.pref_key_kiosk))){
-                //systemUI(Boolean.parseBoolean(value.toString()));
+                Log.d("Kiosk mode ", stringValue);
             }
             else if(preference.getKey().equals(res.getString(R.string.pref_key_boot))){
-                Log.d("Launch app on Boot: ", stringValue);
+                Log.d("Launch app on Boot ", stringValue);
             }
             else if (preference.getKey().equals(res.getString(R.string.pref_key_web_address)) || preference.getKey().equals(res.getString(R.string.pref_key_web_port))){
                 String oldValue = preference.getSharedPreferences().getString(preference.getKey(), "");
@@ -117,6 +118,18 @@ public class SettingsActivity extends PreferenceActivity{
                     LocalBroadcastManager.getInstance(preference.getContext()).sendBroadcast(intent);
 
                 }
+            }
+            else if (preference.getKey().equals(res.getString(R.string.pref_key_scale_multiplier))){
+                String oldValue = preference.getSharedPreferences().getString(preference.getKey(), "");
+                preference.setSummary(stringValue);
+
+                if (!oldValue.equals(stringValue)) {
+                    Intent intent = new Intent(preference.getContext().getApplicationContext(), DispenserWebLayout.class);
+                    intent.setAction(preference.getContext().getString(R.string.broadcast_view_settings_changed));
+                    LocalBroadcastManager.getInstance(preference.getContext()).sendBroadcast(intent);
+
+                }
+
             }
             else {
                 // For all other preferences, set the summary to the value's
@@ -151,6 +164,16 @@ public class SettingsActivity extends PreferenceActivity{
                     PreferenceManager
                             .getDefaultSharedPreferences(preference.getContext())
                             .getBoolean(preference.getKey(), false));
+            preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+
+                    clearLauncherSetting(preference.getContext());
+
+                    return true;
+                }
+            });
 
 
         }
@@ -209,7 +232,12 @@ public class SettingsActivity extends PreferenceActivity{
                     return false;
                 }
             });
-
+        }
+        else if (preference.getKey().equals(res.getString(R.string.pref_key_scale_multiplier))) {
+            sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
+                    PreferenceManager
+                            .getDefaultSharedPreferences(preference.getContext())
+                            .getString(preference.getKey(), "1"));
 
         }
         else {
@@ -239,15 +267,10 @@ public class SettingsActivity extends PreferenceActivity{
             addPreferencesFromResource(R.xml.preference_connection);
             Resources res = getResources();
 
-
             bindPreferenceSummaryToValue(findPreference(res.getString(R.string.pref_key_web_address)));
             bindPreferenceSummaryToValue(findPreference(res.getString(R.string.pref_key_web_port)));
 
         }
-
-
-
-
 
     }
 
@@ -269,11 +292,28 @@ public class SettingsActivity extends PreferenceActivity{
             Resources res = getResources();
 
             bindPreferenceSummaryToValue(findPreference(res.getString(R.string.pref_key_boot)));
-            bindPreferenceSummaryToValue(findPreference(res.getString(R.string.pref_key_kiosk)));
             bindPreferenceSummaryToValue(findPreference(res.getString(R.string.pref_key_quit)));
             bindPreferenceSummaryToValue(findPreference(res.getString(R.string.pref_key_close)));
             bindPreferenceSummaryToValue(findPreference(res.getString(R.string.pref_key_pin)));
             bindPreferenceSummaryToValue(findPreference(res.getString(R.string.pref_key_launcher)));
+
+
+        }
+
+    }
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    public static class ViewPreferenceFragment extends PreferenceFragment {
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+
+            PreferenceManager.setDefaultValues(getActivity(),
+                    R.xml.preference_view, false);
+            addPreferencesFromResource(R.xml.preference_view);
+            Resources res = getResources();
+
+            bindPreferenceSummaryToValue(findPreference(res.getString(R.string.pref_key_kiosk)));
+            bindPreferenceSummaryToValue(findPreference(res.getString(R.string.pref_key_scale_multiplier)));
 
 
         }
@@ -285,7 +325,7 @@ public class SettingsActivity extends PreferenceActivity{
         PackageManager packageManager = context.getPackageManager();
         packageManager.clearPackagePreferredActivities(context.getPackageName());
 
-        ComponentName componentName = new ComponentName(context, com.nemoq.nqdroiddispenser.DummyActivity.class);
+        ComponentName componentName = new ComponentName(context, DummyActivity.class);
         packageManager.setComponentEnabledSetting(componentName, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
 
         Intent selector = new Intent(Intent.ACTION_MAIN);
@@ -295,8 +335,7 @@ public class SettingsActivity extends PreferenceActivity{
         packageManager.setComponentEnabledSetting(componentName, PackageManager.COMPONENT_ENABLED_STATE_DEFAULT, PackageManager.DONT_KILL_APP);
     }
 
-
-    private static void systemUI(boolean enabled){
+/*    private static void systemUI(boolean enabled){
 
         try
         {
@@ -317,7 +356,7 @@ public class SettingsActivity extends PreferenceActivity{
 
 
 
-    }
+    }*/
 
 
 
