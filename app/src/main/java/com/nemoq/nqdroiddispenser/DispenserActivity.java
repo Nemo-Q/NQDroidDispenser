@@ -6,13 +6,16 @@ import com.nemoq.nqdroiddispenser.util.SystemUiHider;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.*;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import java.util.List;
 
@@ -47,6 +50,19 @@ public class DispenserActivity extends Activity{
         setDefaultPreferences();
 
         setContentView(R.layout.activity_dispenser);
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(getString(R.string.broadcast_close_activity));
+        intentFilter.addAction(getString(R.string.broadcast_address_changed));
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.getAction().equals(getResources().getString(R.string.broadcast_close_activity))) {
+                    KIOSK_MODE = false;
+                    finish();
+                }
+            }
+        }, intentFilter);
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -85,11 +101,7 @@ public class DispenserActivity extends Activity{
                     }
                 });
 
-
-
     }
-
-
 
 
     private void setDefaultPreferences(){

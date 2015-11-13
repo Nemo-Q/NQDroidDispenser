@@ -22,7 +22,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:id="@+id/splashImageView"
-        android:src="@drawable/logo1"
+        android:src="@drawable/bgv8"
         android:layout_toEndOf="@+id/rippleView"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"

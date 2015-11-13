@@ -304,8 +304,8 @@ public class DispenserWebLayout extends RelativeLayout implements View.OnClickLi
             historicalY = event.getY();
 
             View ripple = findViewById(R.id.rippleView);
-            ripple.setX(event.getRawX()-ripple.getMeasuredWidth()/2);
-            ripple.setY(event.getRawY()-ripple.getMeasuredHeight()/2);
+            ripple.setX(event.getRawX()-ripple.getMeasuredWidth()/2 + 2 );
+            ripple.setY(event.getRawY()-ripple.getMeasuredHeight()/2 - 4);
         }
         else if (event.getAction() == MotionEvent.ACTION_UP){
 
