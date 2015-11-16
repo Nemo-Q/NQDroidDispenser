@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
@@ -29,6 +31,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 
 /**
@@ -83,7 +86,9 @@ public class DispenserWebLayout extends RelativeLayout implements View.OnClickLi
 
     }
 
-
+    /***
+     *Control outcome of the webview, show a splash at applaunch if theres a long loading time of the webpage.
+     */
     private class DispenserWebViewClient extends WebViewClient {
 
         @Override
@@ -171,8 +176,8 @@ public class DispenserWebLayout extends RelativeLayout implements View.OnClickLi
             }
         });
 
-
-        loadWebFromPreferences();
+        if (checkConnectivity())
+            loadWebFromPreferences();
 
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(getResources().getString(R.string.broadcast_address_changed));
@@ -202,16 +207,38 @@ public class DispenserWebLayout extends RelativeLayout implements View.OnClickLi
 
     }
 
+    private boolean checkConnectivity(){
 
+        ConnectivityManager manager = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo info = manager.getActiveNetworkInfo();
+        if (info == null) {
+
+            Toast toast = Toast.makeText(getContext(),R.string.toast_no_connectivity,Toast.LENGTH_LONG);
+            toast.show();
+            return false;
+        }
+        else
+            return info.isConnected();
+    }
+
+    /***
+     * Loads the desired address from preferences.
+     */
     public void loadWebFromPreferences(){
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         String address = sharedPreferences.getString(getResources().getString(R.string.pref_key_web_address), "");
+        String port =  sharedPreferences.getString(getResources().getString(R.string.pref_key_web_port), "");
+        String protocol = address.contains("://") ? address.substring(0,address.indexOf("://") + "://".length()) : "";
+        String protocolRemoved = address.contains("://") ? address.substring(address.indexOf("://")+"://".length(),address.length()) : address;
+        String portInserted = protocolRemoved.contains("/") ? protocolRemoved.split("/")[0].concat(":" + port + "/").concat(protocolRemoved.split("/")[1]) : protocolRemoved.concat(":" + port + "/");
 
-        webView.loadUrl(address);
-
+        webView.loadUrl(port.equals("80") ? address : protocol + portInserted);
     }
 
+    /***
+     * reloads the page if settings changed.
+     */
     private void reloadCurrentUrl(){
 
         webView.setInitialScale(getInitialScale());
@@ -219,7 +246,10 @@ public class DispenserWebLayout extends RelativeLayout implements View.OnClickLi
 
     }
 
-
+    /**
+     * set initial scale depending on screen density.
+     * @return
+     */
     private int getInitialScale(){
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
@@ -239,12 +269,16 @@ public class DispenserWebLayout extends RelativeLayout implements View.OnClickLi
         }
     }
 
-
-
     float historicalX;
     float historicalY;
     boolean slidingButton = false;
 
+    /***
+     * logic for intercepting touches on the screen, ex. sliding in the settings button in the top right of the screen and the touch position effect.
+     * @param v
+     * @param event
+     * @return
+     */
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
@@ -331,7 +365,9 @@ public class DispenserWebLayout extends RelativeLayout implements View.OnClickLi
         return super.onTouchEvent(event);
     }
 
-
+    /***
+     * show the dialog for pin input to access the settings.
+     */
     private void showPinDialog(){
 
 
@@ -370,11 +406,12 @@ public class DispenserWebLayout extends RelativeLayout implements View.OnClickLi
             }
         });
 
-
-
-
-
     }
+
+    /***
+     * outcome of the pindialog.
+     * @param pinOk
+     */
     private void dialogFinish(final boolean pinOk){
 
         final EditText pinField = (EditText) findViewById(R.id.pinTextField);
@@ -413,6 +450,10 @@ public class DispenserWebLayout extends RelativeLayout implements View.OnClickLi
 
     int pinTries = 0;
 
+    /**
+     * logic for the touch events of the pindialog.
+     * @param v
+     */
     @Override
     public void onClick(View v) {
 
@@ -440,14 +481,9 @@ public class DispenserWebLayout extends RelativeLayout implements View.OnClickLi
 
                 Animation pinShake = AnimationUtils.loadAnimation(getContext(), R.anim.pin_shake);
                 pinField.startAnimation(pinShake);
-
-
             }
 
         }
-
-
-
     }
 
 

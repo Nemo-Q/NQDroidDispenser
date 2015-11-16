@@ -103,6 +103,9 @@ public class DispenserActivity extends Activity{
 
     }
 
+    /***
+     * setup the default prefs, only has effect if no values are stored.
+     */
 
     private void setDefaultPreferences(){
         PreferenceManager.setDefaultValues(this, R.xml.preference_connection, false);
@@ -127,6 +130,9 @@ public class DispenserActivity extends Activity{
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
 
+    /***
+     * starts the settings activity.
+     */
     public void showSettings() {
 
         KIOSK_MODE = false;
@@ -136,9 +142,12 @@ public class DispenserActivity extends Activity{
     }
 
 
-
-
-
+    /***
+     * The result from SettingsActivity
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -161,6 +170,10 @@ public class DispenserActivity extends Activity{
     }
 
 
+    /***
+     * If kiosk mode we want the app to stay in front if it loses focus.
+     * @param hasFocus
+     */
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
@@ -171,6 +184,10 @@ public class DispenserActivity extends Activity{
 
     }
 
+
+    /***
+     * The app comes back to the front of the device.
+     */
 
     private void bringAppToFront(){
         final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
@@ -196,6 +213,9 @@ public class DispenserActivity extends Activity{
 
     }
 
+    /***
+     * sets the app as the launcher
+     */
     private void launcherAppStart(){
 
         Intent intent = new Intent(getApplicationContext(), DispenserActivity.class);
@@ -205,7 +225,9 @@ public class DispenserActivity extends Activity{
         startActivity(intent);
     }
 
-
+    /***
+     * Disable the back button buy intercepting the method of the functions parent.
+     */
     @Override
     public void onBackPressed() {
         hideSystemUI();
