@@ -1,0 +1,611 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head id="Head1">
+<meta http-equiv="content-type" content="text/html; charset=windows-1252"><title>
+	NQ-Startsida
+</title><meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+    <!-- Inställningar för IOS/Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="script/html5.js"></script>
+    <![endif]-->
+    <script type="text/javascript">
+        <!--
+        try{
+            history.pushState({ page: 1 }, "title 1", "#nbb");
+            window.onhashchange = function (event) {
+                window.location.hash = "nbb";
+            };
+        }catch(err){}
+        //-->
+        function getObject(id) {
+            try {
+                if (document.getElementById)
+                    var object = document.getElementById(id);
+                else if (document.all)
+                    var object = document.all[id];
+                else if (document.layers)
+                    var object = document.layers[id];
+
+            }
+            catch (err) { }
+            return object;
+        }
+
+        var timeouthandle = null;
+        function restart() {
+            if (timeouthandle != null)
+                clearTimeout(timeouthandle);
+            timeouthandle = setTimeout("restart()", 30000);
+        }
+        timeouthandle = setTimeout("restart()", 30000);
+
+        function mobilecheck() {
+            try {
+                if (navigator.userAgent.match(/Android/i))
+                    return "Android";
+                else if (navigator.userAgent.match(/webOS/i))
+                    return "webOS";
+                else if (navigator.userAgent.match(/iPhone/i))
+                    return "iPhone";
+                else if (navigator.userAgent.match(/iPad/i))
+                    return "iPad";
+                else if (navigator.userAgent.match(/iPod/i))
+                    return "iPod";
+                else if (navigator.userAgent.match(/BlackBerry/i))
+                    return "BlackBerry";
+                else if (navigator.userAgent.match(/Windows Phone/i))
+                    return "Windows Phone";
+                else
+                    return "";
+            }
+            catch (err) { return ""; }
+        }
+        function send() {
+            form1.submit();
+        }
+        function showproc() {
+            var obj = getObject("processing");
+            obj.style.visibility = "visible";
+            var wait = document.getElementById("wait");
+            wait.innerHTML = '<img src="img/ajax-loader.gif" width="54px" height="55px" alt="" />';
+            wait.style.display = '';
+        }
+        function hideproc() {
+            var obj = getObject("processing");
+            if (obj != null)
+                obj.style.visibility = "hidden";
+        }
+    </script>
+    <style type="text/css">
+        html, body {
+            padding: 0px;
+            margin: 0px;
+            overflow: hidden;
+            font-family: Arial;
+            background-color: #333333;
+        }
+
+            body:after {
+                content: url(img/exit.png);
+                content: url(img/ajax-loader.gif);
+            }
+
+        #dpi {
+            height: 1in;
+            left: -100%;
+            position: absolute;
+            top: -100%;
+            width: 1in;
+        }
+
+        #container {
+            margin: 0 auto;
+            left: 50%;
+        }
+
+        .button {
+            display: inline-block;
+            text-align: center;
+            line-height: 40px;
+            width: 100px;
+            height: 40px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 20px;
+            color: #ffffff;
+            background-color: #70a0ee;
+            padding: 4px;
+            margin: 5px;
+            border: 1px solid #000;
+            -webkit-border-top-right-radius: 4px;
+            border-top-right-radius: 4px;
+            -moz-border-radius-topright: 4px;
+            -webkit-border-bottom-right-radius: 4px;
+            border-bottom-right-radius: 4px;
+            -moz-border-radius-bottomright: 4px;
+            -webkit-border-top-left-radius: 4px;
+            border-top-left-radius: 4px;
+            -moz-border-radius-topleft: 4px;
+            -webkit-border-bottom-left-radius: 4px;
+            border-bottom-left-radius: 4px;
+            -moz-border-radius-bottomleft: 4px;
+            box-shadow: 1px 1px 1px #888888;
+            -webkit-appearance: none;
+        }
+
+            .button:hover {
+                position: relative;
+                top: 1px;
+                left: 1px;
+                cursor: pointer;
+            }
+
+        .number {
+            display: inline-block;
+            text-align: center;
+            line-height: 40px;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 20px;
+            color: #ffffff;
+            background-color: #70a0ee;
+            padding: 4px;
+            margin: 5px;
+            border: 1px solid #000;
+            -webkit-border-top-right-radius: 4px;
+            border-top-right-radius: 4px;
+            -moz-border-radius-topright: 4px;
+            -webkit-border-bottom-right-radius: 4px;
+            border-bottom-right-radius: 4px;
+            -moz-border-radius-bottomright: 4px;
+            -webkit-border-top-left-radius: 4px;
+            border-top-left-radius: 4px;
+            -moz-border-radius-topleft: 4px;
+            -webkit-border-bottom-left-radius: 4px;
+            border-bottom-left-radius: 4px;
+            -moz-border-radius-bottomleft: 4px;
+            box-shadow: 1px 1px 1px #888888;
+            -webkit-appearance: none;
+        }
+
+            .number:hover {
+                position: relative;
+                top: 1px;
+                left: 1px;
+                cursor: pointer;
+            }
+
+        .next {
+            background-color: #55cc55;
+        }
+
+        .back {
+            background-color: #cc5555;
+        }
+
+        #header {
+            width: 100%;
+            height: 40px;
+            margin: 0 auto;
+            padding: 0px;
+            background-color: #000;
+            color: white;
+            font-size: 25px;
+            line-height: 40px;
+            font-weight: bold;
+        }
+
+        #headerdiv {
+            padding: 0px;
+            margin: 0px;
+            height: 40px;
+            width: 280px;
+            text-align: left;
+        }
+
+        #nemoq {
+            padding: 0px;
+            margin: 0px;
+            height: 38px;
+            width: 38px;
+        }
+
+        #info {
+            height: 40px;
+            width: 234px;
+            display: inline-block;
+            padding: 0px;
+            margin: 0px;
+            padding-bottom: 5px;
+            vertical-align: bottom;
+        }
+
+        #lblHeader {
+            padding: 0px;
+            margin: 0px;
+            height: 35px;
+            width: 234px;
+            font-size: 25px;
+            line-height: 15px;
+        }
+
+        .header1 {
+            width: 310px;
+            height: 40px;
+            margin: 0 auto;
+            padding: 0px;
+            color: white;
+            font-size: 25px;
+            line-height: 40px;
+            font-weight: bold;
+        }
+
+        #userid {
+            width: 310px;
+            height: 40px;
+            margin: 0 auto;
+            padding: 0px;
+            font-size: 35px;
+            line-height: 40px;
+            font-weight: bold;
+            text-align: center;
+            border: 1px solid #000;
+            -webkit-border-top-right-radius: 4px;
+            border-top-right-radius: 4px;
+            -moz-border-radius-topright: 4px;
+            -webkit-border-bottom-right-radius: 4px;
+            border-bottom-right-radius: 4px;
+            -moz-border-radius-bottomright: 4px;
+            -webkit-border-top-left-radius: 4px;
+            border-top-left-radius: 4px;
+            -moz-border-radius-topleft: 4px;
+            -webkit-border-bottom-left-radius: 4px;
+            border-bottom-left-radius: 4px;
+            -moz-border-radius-bottomleft: 4px;
+        }
+
+        #wrapper {
+            position: relative;
+            z-index: 1;
+            top: 0px;
+            bottom: 0px;
+            left: 0;
+            width: 100%;
+            padding: 0px;
+            margin: 0px;
+            overflow: auto;
+        }
+
+        #footer {
+            width: 100%;
+            height: 60px;
+            position: fixed;
+            bottom: 0;
+            margin: 0 auto;
+            background-color: #000;
+            z-index: 1000;
+        }
+
+        .wait {
+            position: absolute;
+            z-index: 1000;
+            top: 40%;
+            left: 45%;
+        }
+
+        .waitall {
+            display: block; /* for testing purposes */
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #333333;
+            z-index: 1000;
+            opacity: .7; /* for modern non-IE browsers - Firefox/Gecko, Opera, Safari */
+            filter: alpha(opacity=70); /* for IE only */
+        }
+    </style>
+</head>
+<body onunload="showproc();">
+    <form name="form1" method="post" action="" id="form1">
+<div>
+<input name="__VIEWSTATE" id="__VIEWSTATE" value="/wEPDwULLTE0MjA5MDEyNjMPZBYCAgMPZBYCAgMPD2QWBh4EdHlwZQUGbnVtYmVyHhFhbmRyb2lkOmlucHV0VHlwZQUGbnVtYmVyHgdwYXR0ZXJuBQNcZCpkZOr0W3TeL8jqlQtNO0xkleiX1dlFwnHDQ+8YJw4gWm0e" type="hidden">
+</div>
+
+<div>
+
+	<input name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="CBD621ED" type="hidden">
+	<input name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="/wEdAAPuIEhFcZoNy1D77ApvNy68shCT4q90vziZH2FxDPZECNgWghcWV2pPuGmBAUWCw652EtgvPf/W/aele/viLHDBVQXCcBkQ7T4XzugFnLNxgw==" type="hidden">
+</div>
+        <div id="dpi">
+        </div>
+        <center>
+            <div id="container">
+                <div style="width: 1920px; height: 1089px; display: block; vertical-align: middle; background-size: 1916px 1085px;" id="box">
+                    <div style="height: 76.129px; font-size: 47.5806px; line-height: 76.129px;" id="header">
+                        <div style="width: 532.903px; height: 76.129px;" id="headerdiv">
+                            <img style="width: 72.3226px; height: 72.3226px;" id="nemoq" src="NQ-Startsida-filer/nq.png" alt="Nemo-Q">
+                            <div style="height: 66.6129px; width: 445.355px; padding-bottom: 9.51613px;" id="info">
+                                <span style="width: 445.355px; height: 66.6129px; font-size: 47.5806px; line-height: 38.0645px;" id="lblHeader">Startsida</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="width: 590px; height: 898.677px; display: block; vertical-align: middle; background-size: 586px 894.677px;" id="wrapper">
+                        <div id="scroller">
+                            <div style="width: 342.581px; height: 76.129px; line-height: 76.129px; font-size: 38.0645px; margin: 13.3226px;" class="header1">Användar-ID:</div>
+                            <input style="height: 76.129px; width: 570.968px; font-size: 66.6129px; line-height: 76.129px;" name="userid" id="userid" android:inputtype="number" pattern="\d*" type="number">
+                            <div>
+                                
+                            </div>
+                            <center>
+                                <table cellpadding="3" cellspacing="3">
+                                    <tbody><tr>
+                                        <td>
+                                            <input id="button1" class="number" value="1" onclick="javascript: add_nr(1);" type="button"></td>
+                                        <td>
+                                            <input id="button2" class="number" value="2" onclick="javascript: add_nr(2);" type="button"></td>
+                                        <td>
+                                            <input id="button3" class="number" value="3" onclick="javascript: add_nr(3);" type="button"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <input id="button4" class="number" value="4" onclick="javascript: add_nr(4);" type="button"></td>
+                                        <td>
+                                            <input id="button5" class="number" value="5" onclick="javascript: add_nr(5);" type="button"></td>
+                                        <td>
+                                            <input id="button6" class="number" value="6" onclick="javascript: add_nr(6);" type="button"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <input id="button7" class="number" value="7" onclick="javascript: add_nr(7);" type="button"></td>
+                                        <td>
+                                            <input id="button8" class="number" value="8" onclick="javascript: add_nr(8);" type="button"></td>
+                                        <td>
+                                            <input id="button9" class="number" value="9" onclick="javascript: add_nr(9);" type="button"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <input id="buttonb" class="number back" value="&lt;&lt;" onclick="javascript: backspace();" type="button"></td>
+                                        <td>
+                                            <input id="button0" class="number" value="0" onclick="javascript: add_nr(0);" type="button"></td>
+                                        <td>
+                                            <input id="button10" class="number" value="+" onclick='javascript: add_nr("+");' type="button">
+                                        </td>
+                                    </tr>
+                                </tbody></table>
+                            </center>
+                        </div>
+                    </div>
+                    <div style="height: 114.194px;" id="footer">
+                        <input style="width: 342.581px; height: 76.129px; line-height: 66.6129px; font-size: 38.0645px; margin: 13.3226px;" name="btnNextClick" value="nästa" onclick="javascript:showproc();" id="btnNextClick" class="button next" type="submit">
+                    </div>
+                </div>
+            </div>
+            <div id="processing" style="visibility: hidden;" onclick="hideproc();">
+                <div id="waitall" class="waitall">
+                </div>
+                <div id="wait" class="wait">
+                    <img src="NQ-Startsida-filer/ajax-loader.gif" alt="">
+                </div>
+            </div>
+        </center>
+        <script type="text/javascript">
+            function unfocus() {
+                getObject('button1').focus();
+            }
+            var tobject = getObject('userid');
+            function add_nr(nr) {
+                if (check(nr)) {
+                    addtime();
+                    if (tobject.value.length > 0 && tobject.value.length < 15) {
+                        if (validate() && nr != '+')
+                            tobject.value += nr;
+                    }
+                    else if (tobject.value.length < 15) {
+                        tobject.value += nr;
+                    }
+                }
+            }
+            function check(Char) {
+                var ValidChars = "+0123456789";
+                var retval = false;
+                if (ValidChars.indexOf(Char) != -1) {
+                    retval = true;
+                }
+
+                return retval;
+            }
+            function validate() {
+                var number = tobject.value;
+                var pattern = "^[0-9+]{1}[0-9+]{0,15}";
+                var patt = new RegExp(pattern);
+                return patt.test(number);
+            }
+            function backspace() {
+                addtime();
+                var sText = tobject.value;
+                tobject.value = sText.substring(0, sText.length - 1);
+            }
+            var winW = 630, winH = 460;
+            function windowsize() {
+                try {
+                    if (document.body && document.body.offsetWidth) {
+                        winW = document.body.offsetWidth;
+                        winH = document.body.offsetHeight;
+                    }
+                    if (document.compatMode == 'CSS1Compat' &&
+                    document.documentElement &&
+                    document.documentElement.offsetWidth) {
+                        winW = document.documentElement.offsetWidth;
+                        winH = document.documentElement.offsetHeight;
+                    }
+                    if (window.innerWidth && window.innerHeight) {
+                        winW = window.innerWidth;
+                        winH = window.innerHeight;
+                    }
+                }
+                catch (err) { }
+            }
+            var mobile = mobilecheck();
+            function getDPI() {
+                try {
+                    return document.getElementById("dpi").offsetHeight;
+                }
+                catch (err) { return 96; }
+            }
+            function divresize(id, x, y, display, rotate) {
+                try {
+                    var div = getObject(id);
+                    var sx = x.toString() + "px";
+                    var sy = y.toString() + "px";
+                    div.style.width = sx;
+                    div.style.height = sy;
+                    x = x - 4;
+                    y = y - 4;
+                    sx = x.toString() + "px";
+                    sy = y.toString() + "px";
+                    div.style.display = display;
+                    div.style.verticalAlign = "middle";
+                    if (display == "inline-block") {
+                        div.style.lineHeight = y + "px";
+                    }
+                    else {
+                        div.style.lineHeight = "";
+                    }
+
+                    div.style.backgroundSize = sx + " " + sy;
+                }
+                catch (err) { }
+            }
+
+            var rescale = function () {
+                try {
+                    var dpi = getDPI();
+                    windowsize();
+                    var mobile = mobilecheck();
+                    var rotate = 0;
+                    var wrapperW = 0;
+                    if (winW > winH)
+                        rotate = 90;
+                    else
+                        rotate = 0;
+                    var basewidth = winW - 10;
+                    if (basewidth > 590)
+                        basewidth = 590;
+
+                    wrapperW = basewidth;
+
+                    var header = getObject('header');
+                    var headerhight = 40 * basewidth / 310;
+                    header.style.height = headerhight + "px";
+                    header.style.fontSize = 25 * basewidth / 310 + "px";
+                    header.style.lineHeight = 40 * basewidth / 310 + "px";
+
+                    var divnemoq = getObject('headerdiv');
+                    divnemoq.style.width = 280 * basewidth / 310 + "px";
+                    divnemoq.style.height = 40 * basewidth / 310 + "px";
+
+                    var nemoq = getObject('nemoq');
+                    nemoq.style.width = 38 * basewidth / 310 + "px";
+                    nemoq.style.height = 38 * basewidth / 310 + "px";
+
+                    var info = getObject('info');
+                    info.style.height = 35 * basewidth / 310 + "px";
+                    info.style.width = 234 * basewidth / 310 + "px";
+                    info.style.paddingBottom = 5 * basewidth / 310 + "px";
+
+                    var lblHeader = getObject('lblHeader');
+                    lblHeader.style.width = 234 * basewidth / 310 + "px";
+                    lblHeader.style.height = 35 * basewidth / 310 + "px";
+                    lblHeader.style.fontSize = 25 * basewidth / 310 + "px";
+                    lblHeader.style.lineHeight = 20 * basewidth / 310 + "px";
+
+                    var header1 = document.getElementsByClassName('header1');
+                    for (var i in header1) {
+                        if (i < header1.length || i == "lblMessage") {
+                            header1[i].style.width = 180 * basewidth / 310 + "px";
+                            header1[i].style.height = 40 * basewidth / 310 + "px";
+                            header1[i].style.lineHeight = 40 * basewidth / 310 + "px";
+                            header1[i].style.fontSize = 20 * basewidth / 310 + "px";
+                            header1[i].style.margin = 7 * basewidth / 310 + "px";
+                        }
+                    }
+
+                    var userid = getObject('userid');
+                    userid.style.height = headerhight + "px";
+                    userid.style.width = 300 * basewidth / 310 + "px";
+                    userid.style.fontSize = 35 * basewidth / 310 + "px";
+                    userid.style.lineHeight = 40 * basewidth / 310 + "px";
+
+                    var footer = getObject('footer');
+                    var footerhight = 60 * basewidth / 310;
+                    footer.style.height = footerhight + "px";
+
+                    var button = document.getElementsByClassName('button');
+                    for (var i in button) {
+                        if (i < button.length || i == "btnNextClick") {
+                            button[i].style.width = 180 * basewidth / 310 + "px";
+                            button[i].style.height = 40 * basewidth / 310 + "px";
+                            button[i].style.lineHeight = 35 * basewidth / 310 + "px";
+                            button[i].style.fontSize = 20 * basewidth / 310 + "px";
+                            button[i].style.margin = 7 * basewidth / 310 + "px";
+                        }
+                    }
+                    var number = document.getElementsByClassName('number');
+                    for (var i in number) {
+                        if (i.indexOf('button') > -1) {
+                            number[i].style.width = 70 * basewidth / 310 + "px";
+                            number[i].style.height = 40 * basewidth / 310 + "px";
+                            number[i].style.lineHeight = 35 * basewidth / 310 + "px";
+                            number[i].style.fontSize = 35 * basewidth / 310 + "px";
+                            number[i].style.margin = 7 * basewidth / 310 + "px";
+                        }
+                    }
+                    if (rotate == 0 || rotate == 180) {
+                        divresize("box", winW, winH, "block", rotate);
+                        divresize("wrapper", wrapperW, winH - headerhight - footerhight, "block", rotate);
+                    } else {
+                        divresize("box", winW, winH, "block", rotate);
+                        divresize("wrapper", wrapperW, winH - headerhight - footerhight, "block", rotate);
+                    }
+                }
+                catch (err) { }
+            };
+
+            try {
+                window.addEventListener("resize", rescale, false);
+            }
+            catch (err) { document.body.onresize = function () { rescale(); }; }
+            try {
+                window.addEventListener("touchstart", function (event) {
+                    if (event.target.tagName == "HTML" || event.target.tagName == "BODY") {
+                        event.preventDefault();
+                    }
+                }, false);
+            } catch (err) { }
+            rescale();
+            function addtime() {
+                restart();
+            }
+            var input = getObject('userid');
+            input.onkeydown = function (e) {
+                addtime();
+            };
+            var tb = getObject("userid");
+            tb.focus();
+            if (tb.setSelectionRange) {
+                var len = tb.value.length * 2;
+                tb.setSelectionRange(len, len);
+            } else {
+                tb.value = tb.value;
+            }
+        </script>
+    </form>
+
+
+
+</body></html>
